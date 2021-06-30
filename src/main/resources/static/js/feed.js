@@ -1,16 +1,16 @@
 let page = 0;
 
 $(window).scroll(function() {
-    if ($(window).scrollTop() == $(document).height - $(window).height) {
+    if ($(window).scrollTop() == $(document).height() - $(window).height()) {
         page++;
-        loud_feed_box();
+        load_feed_box(); // 박스 3개씩 로드
     }
-})
+});
 
-function make_feed_box(image) {
+function make_feed_box(image){
     let feed_box = `<div class="photo u-default-box">`;
     feed_box += `<header class="photo__header">`;
-    feed_box += `<img src="/images/avatar.jpg" />`;
+    feed_box += `<img src="/upload/${image.user.profileImage}" onerror="this.onerror=null; this.src='/images/avatar.jpg'"/>`;
     feed_box += `<div class="photo_user_info">`;
     feed_box += `<span class="photo__username">${image.user.username}</span>`;
     feed_box += `<span class="photo__location">${image.location}</span></div></header>`;
@@ -19,9 +19,9 @@ function make_feed_box(image) {
     feed_box += `<div class="photo__info"><div class="photo__actions"><span class="photo__action">`;
 
     if(image.heart == true){
-        feed_box += `<i id="${image.id}" class="fa fa-heart heart heart-clicked"></i>`;
+        feed_box += `<i onclick="onFeedLoad(${image.id})" id="${image.id}" class="fa fa-heart heart heart-clicked"></i>`;
     }else{
-        feed_box += `<i id="${image.id}" class="fa fa-heart-o heart"></i>`;
+        feed_box += `<i onclick="onFeedLoad(${image.id})" id="${image.id}" class="fa fa-heart-o heart"></i>`;
     }
 
     feed_box += `</span> <span class="photo__action">`;
@@ -60,3 +60,18 @@ async function load_feed_box(){
         $("#feed").append(feed_box);
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

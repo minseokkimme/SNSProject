@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +11,14 @@
 		  rel="stylesheet">
 	<link rel="shortcut icon" href="/images/favicon.ico">
 	<link rel="stylesheet" href="/css/styles.css">
+	<style>
+		.big-box {
+			width: 100%;
+			background-color: gray;
+			height: 100vh;
+			border-top: 1px solid black;
+		}
+	</style>
 </head>
 <body>
 
@@ -22,10 +31,10 @@
 		<div class="photo u-default-box">
 			<header class="photo__header">
 				<img src="/upload/${image.user.profileImage}" />
-					<div class="photo_user_info">
-						<span class="photo__username">${image.user.username}</span>
-						<span class="photo__location">${image.location}</span>
-					</div>
+				<div class="photo_user_info">
+					<span class="photo__username">${image.user.username}</span>
+					<span class="photo__location">${image.location}</span>
+				</div>
 			</header>
 			<div class="photo_post_image">
 				<img src="/upload/${image.postImage}" />
@@ -67,7 +76,6 @@
 </main>
 
 <%@ include file="../include/footer.jsp"%>
-
+<script src="/js/feed.js"></script>
 </body>
 </html>
-

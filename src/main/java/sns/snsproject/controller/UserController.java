@@ -3,6 +3,7 @@ package sns.snsproject.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,30 @@ public class UserController {
     @Autowired
     private FollowRepository mFollowRepository;
 
+    @Value("${file.path}")
+    private String fileRealPath;
+
+    @PostMapping("/user/profileUpload")
+    public String userProfileUpload
+            (
+                    @RequestParam("profileImage") MultipartFile file,
+                    @AuthenticationPrincipal MyUserDetail userDetail
+            ) throws IOException
+    {
+        User principal = userDetail.getUser();
+
+        // 파일 처리
+        UUID uuid = UUID.randomUUID();
+        String uuidFilename = uuid+"_"+file.getOriginalFilename();
+        Path filePath = Paths.get(fileRealPath+uuidFilename);
+        Files.write(filePath, file.getBytes());
+
+        principal.setProfileImage(uuidFilename);
+        mUserRepository.save(principal);
+        return "redirect:/user/"+principal.getId();
+    }
+
+
     @GetMapping("/auth/login")
     public String authLogin() {
         return "auth/login";
@@ -54,8 +79,8 @@ public class UserController {
         String rawPassword = user.getPassword();
         String encPassword = encoder.encode(rawPassword);
         user.setPassword(encPassword);
-        log.info("rawPassword : " + rawPassword);
-        log.info("encPassword : " + encPassword);
+        log.info("rawPassword : "+rawPassword);
+        log.info("encPassword : "+encPassword);
 
         mUserRepository.save(user);
 
@@ -85,7 +110,7 @@ public class UserController {
         User principal = userDetail.getUser();
 
         int followCheck = mFollowRepository.countByFromUserIdAndToUserId(principal.getId(), id);
-        log.info("followCheck : " + followCheck);
+        log.info("followCheck : "+followCheck);
         model.addAttribute("followCheck", followCheck);
 
         return "user/profile";
@@ -100,25 +125,5 @@ public class UserController {
         return "user/profile_edit";
     }
 
-//    @PostMapping("/user/profileUpload")
-//    public String userProfileUpload
-//            (
-//                    @RequestParam("profileImage")MultipartFile file,
-//                    @AuthenticationPrincipal MyUserDetail userDetail
-//            ) throws IOException
-//    {
-//        User principal = userDetail.getUser();
-//
-//        UUID uuid = UUID.randomUUID();
-//        String uuidFileName = uuid + "_" + file.getOriginalFilename();
-//        Path filePath = Paths.get(fileRealPath + uuidFileName);
-//        Files.write(filePath, file.getBytes());
-//
-//
-//        principal.setProfileImage(uuidFileName);
-//
-//        mUserRepository.save(principal);
-//        return "redirect:/user/" + principal.getId();
-//
-//    }
+
 }
